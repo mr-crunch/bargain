@@ -1,13 +1,10 @@
-use std::collections::HashMap;
-use std::io;
-
 mod human_input {
     use std::{
         io::{self, Write},
         str::FromStr,
     };
     pub fn read_string(prompt: &str) -> io::Result<Option<String>> {
-        println!("{}", prompt);
+        print!("{}", prompt);
         io::stdout().flush()?;
         let mut input = String::new();
         io::stdin().read_line(&mut input)?;
@@ -55,7 +52,15 @@ struct Month {
 impl Month {
     fn new(bills: Vec<Bill>) -> Month {
         Month {
-            month: String::from("Na"),
+            month: {
+                match human_input::read_string_checked("enter month: ") {
+                    Ok(input) => input,
+                    Err(error) => {
+                        println!("error: {:?}", error);
+                        String::from("Na")
+                    }
+                }
+            },
             bills,
         }
     }
@@ -66,6 +71,9 @@ impl Month {
             total += bill.price
         }
         total
+    }
+    fn print_pretty(&self) {
+        println!("Month: {}", self.month());
     }
 }
 
