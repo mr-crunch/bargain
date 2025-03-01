@@ -4,7 +4,8 @@ mod human_input {
         str::FromStr,
     };
     pub fn read_string(prompt: &str) -> io::Result<Option<String>> {
-        print!("{}", prompt);
+        println!("{}", prompt);
+        print!(">> ");
         io::stdout().flush()?;
         let mut input = String::new();
         io::stdin().read_line(&mut input)?;
@@ -39,12 +40,12 @@ mod human_input {
             println!("{}", prompt);
             let mut options_iter = options.iter().enumerate();
             if let Some((_, option)) = options_iter.next() {
-                println!("1: {}", option.as_ref());
+                println!("\t1: {}", option.as_ref());
             }
             for (idx, option) in options_iter {
-                println!("{}: {}", idx + 1, option.as_ref());
+                println!("\t{}: {}", idx + 1, option.as_ref());
             }
-            print!("choice: ");
+            print!(">> ");
             io::stdout().flush()?;
             let mut input = String::new();
             io::stdin().read_line(&mut input)?;
@@ -191,6 +192,8 @@ pub fn print_menu() -> usize {
         }
     }
 }
+
+pub fn print_year(year: &HashMap<String, Month>) {}
 
 pub fn run(bills: &mut Vec<Bill>, year: &mut HashMap<String, Month>) {
     loop {
