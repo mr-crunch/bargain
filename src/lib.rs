@@ -73,6 +73,8 @@ mod human_input {
     }
 }
 
+use std::collections::HashMap;
+
 #[derive(Debug)]
 pub struct Bill {
     pub name: String,
@@ -185,6 +187,30 @@ pub fn print_menu() -> usize {
             Err(error) => {
                 eprintln!("error: {:?}", error);
                 continue;
+            }
+        }
+    }
+}
+
+pub fn run(bills: &mut Vec<Bill>, year: &mut HashMap<String, Month>) {
+    loop {
+        match print_menu() {
+            1 => match human_input::read_string_checked("enter month:") {
+                Ok(month) => {
+                    year.entry(month).or_default();
+                }
+                Err(error) => {
+                    eprintln!("error: {:?}", error);
+                }
+            },
+            2 => println!("entered 2"),
+            3 => {
+                println!("exiting...");
+                break;
+            }
+            _ => {
+                println!("no choice... exiting...");
+                break;
             }
         }
     }

@@ -1,25 +1,8 @@
-use bills::Month;
+use bills::{Bill, Month};
+use std::collections::HashMap;
 
 fn main() {
-    loop {
-        match bills::print_menu() {
-            1 => println!("entered 1"),
-            2 => println!("entered 2"),
-            3 => {
-                println!("exiting...");
-                break;
-            }
-            _ => {
-                println!("no choice... exiting...");
-                break;
-            }
-        }
-    }
-    //let water = Bill::new();
-    //let electricity = Bill::new();
-    //let bills = vec![water, electricity];
-    //let month = Month::new(bills);
-    //println!("month {:?}, total: {}", month, month.total());
+    let mut bills: Vec<Bill> = Vec::new();
+    let mut year: HashMap<String, Month> = HashMap::new();
+    bills::run(&mut bills, &mut year);
 }
-
-//fn new_month() -> Month {}
