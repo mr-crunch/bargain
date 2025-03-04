@@ -132,6 +132,12 @@ impl Month {
             }
         }
     }
+
+    pub fn print_bills(&self) {
+        for bill in &self.bills {
+            bill.print_bill()
+        }
+    }
 }
 
 impl Bill {
@@ -167,6 +173,13 @@ impl Bill {
             paid: false,
         }
     }
+
+    pub fn print_bill(&self) {
+        println!(
+            "bill: {} price: {} due date: {} paid: {}",
+            self.name, self.price, self.due, self.paid
+        );
+    }
 }
 
 impl Default for Bill {
@@ -195,7 +208,7 @@ pub fn print_menu() -> usize {
 
 pub fn print_year(year: &HashMap<String, Month>) {}
 
-pub fn run(bills: &mut Vec<Bill>, year: &mut HashMap<String, Month>) {
+pub fn run(year: &mut HashMap<String, Month>) {
     loop {
         match print_menu() {
             1 => match human_input::read_string_checked("enter month:") {
@@ -206,7 +219,19 @@ pub fn run(bills: &mut Vec<Bill>, year: &mut HashMap<String, Month>) {
                     eprintln!("error: {:?}", error);
                 }
             },
-            2 => println!("entered 2"),
+            2 => match human_input::read_string_checked("enter month to print:") {
+                Ok(month) => match year.get(&month) {
+                    Some(month) => month.print_bills(),
+                    None => {
+                        println!("month not found");
+                        continue;
+                    }
+                },
+                Err(error) => {
+                    eprintln!("error: {:?}", error);
+                }
+            },
+            //println!("entered 2"),
             3 => {
                 println!("exiting...");
                 break;
