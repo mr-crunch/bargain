@@ -76,7 +76,6 @@ mod human_input {
 
 use std::collections::HashMap;
 
-#[derive(Debug)]
 pub struct Bill {
     pub name: String,
     pub price: f32,
@@ -84,7 +83,6 @@ pub struct Bill {
     pub paid: bool,
 }
 
-#[derive(Debug)]
 pub struct Month {
     pub month: String,
     pub bills: Vec<Bill>,
@@ -206,7 +204,9 @@ pub fn print_menu() -> usize {
     }
 }
 
-pub fn print_year(year: &HashMap<String, Month>) {}
+pub fn print_year(year: &HashMap<String, Month>) {
+    todo!();
+}
 
 pub fn run(year: &mut HashMap<String, Month>) {
     loop {
