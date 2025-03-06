@@ -84,22 +84,12 @@ pub struct Bill {
 }
 
 pub struct Month {
-    pub month: String,
     pub bills: Vec<Bill>,
 }
 
 impl Month {
     pub fn new() -> Month {
         Month {
-            month: {
-                match human_input::read_string_checked("enter month: ") {
-                    Ok(input) => input,
-                    Err(error) => {
-                        println!("error: {:?}", error);
-                        String::from("Na")
-                    }
-                }
-            },
             bills: Self::make_bills(),
         }
     }
@@ -111,14 +101,12 @@ impl Month {
         }
         total
     }
-    //fn print_pretty(&self) {
-    //    println!("Month: {}", self.month());
-    //}
+
     fn make_bills() -> Vec<Bill> {
         let mut bills = Vec::new();
-        match human_input::read_typed_checked::<i32>("enter bill count:") {
+        match human_input::read_typed_checked::<usize>("enter bill count:") {
             Ok(count) => {
-                for i in 1..=count {
+                for _ in 1..=count {
                     bills.push(Bill::default())
                 }
                 bills
@@ -131,10 +119,11 @@ impl Month {
         }
     }
 
-    pub fn print_bills(&self) {
+    pub fn print_bills(&self, month: &str) {
         for bill in &self.bills {
-            bill.print_bill()
+            bill.print_bill();
         }
+        println!("total for {}: {}", month, self.total());
     }
 }
 
@@ -172,6 +161,10 @@ impl Bill {
         }
     }
 
+    fn paid(&mut self) {
+        self.paid = !self.paid
+    }
+
     pub fn print_bill(&self) {
         println!(
             "bill: {} price: {} due date: {} paid: {}",
@@ -192,14 +185,50 @@ impl Default for Month {
     }
 }
 
-pub fn print_menu() -> usize {
+pub fn print_main_menu() -> usize {
     loop {
-        match human_input::read_menu("enter choice:", &["make new month", "print", "exit"]) {
+        match human_input::read_menu(
+            "enter choice:",
+            &["make new month", "edit month", "print", "exit"],
+        ) {
             Ok(choice) => return choice,
             Err(error) => {
                 eprintln!("error: {:?}", error);
                 continue;
             }
+        }
+    }
+}
+
+pub fn print_edit_menu() -> usize {
+    loop {
+        match human_input::read_menu(
+            "enter choice:",
+            &[
+                "change name",
+                "change price",
+                "change due date",
+                "change status",
+                "return to main menu",
+            ],
+        ) {
+            Ok(choice) => return choice,
+            Err(error) => {
+                eprintln!("error: {:?}", error);
+                continue;
+            }
+        }
+    }
+}
+
+pub fn edit_menu(month: &mut Month) {
+    loop {
+        match print_edit_menu() {
+            1 => todo!(),
+            2 => todo!(),
+            3 => todo!(),
+            4 => todo!(),
+            _ => break,
         }
     }
 }
@@ -210,7 +239,7 @@ pub fn print_year(year: &HashMap<String, Month>) {
 
 pub fn run(year: &mut HashMap<String, Month>) {
     loop {
-        match print_menu() {
+        match print_main_menu() {
             1 => match human_input::read_string_checked("enter month:") {
                 Ok(month) => {
                     year.entry(month).or_default();
@@ -219,9 +248,21 @@ pub fn run(year: &mut HashMap<String, Month>) {
                     eprintln!("error: {:?}", error);
                 }
             },
-            2 => match human_input::read_string_checked("enter month to print:") {
-                Ok(month) => match year.get(&month) {
-                    Some(month) => month.print_bills(),
+            2 => match human_input::read_string_checked("enter month to edit:") {
+                Ok(month) => match year.get_mut(&month) {
+                    Some(month) => edit_menu(month),
+                    None => {
+                        println!("month not found");
+                        continue;
+                    }
+                },
+                Err(error) => {
+                    eprintln!("error: {:?}", error)
+                }
+            },
+            3 => match human_input::read_string_checked("enter month to print:") {
+                Ok(key) => match year.get(&key) {
+                    Some(month) => month.print_bills(&key),
                     None => {
                         println!("month not found");
                         continue;
@@ -232,7 +273,7 @@ pub fn run(year: &mut HashMap<String, Month>) {
                 }
             },
             //println!("entered 2"),
-            3 => {
+            4 => {
                 println!("exiting...");
                 break;
             }
