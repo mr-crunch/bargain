@@ -284,8 +284,3 @@ pub fn run(year: &mut HashMap<String, Month>) {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-}
